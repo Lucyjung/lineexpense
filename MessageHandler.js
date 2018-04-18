@@ -207,11 +207,10 @@ function getReport(userId, type, target){
     promise.then(data => {
       let aggregatedData = aggregation(data,'category', 'cost', isRequireRaw);
       let report = dataToMsg(aggregatedData, isRequireRaw);
-
       let options = {width: 400, height: 450, };
       output('./data/' + userId, dataToChart(aggregatedData.sum) ,options, function(){
-
         options = {compress: true};
+        console.log(__dirname + '/data')
         svg_to_png.convert(__dirname + '/data', 'public',options) // async, returns promise 
           .then( function(){
             sharp('./public/' + userId + '.png')
