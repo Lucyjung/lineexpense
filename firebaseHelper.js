@@ -17,14 +17,7 @@ module.exports ={
       cost: cost,
       timestamp : timestamp
     };
-    const docRef = await userExpense.add(postData)
-      .then((docRef)=> {
-        return resolve(docRef);
-      })
-      .catch(function(error) {
-        return reject(error);
-      });
-    return docRef;
+    return await userExpense.add(postData);
   },
   getUserExpense : async (userId, timestart, timeend)  => {
     const snapshot = await userExpense
