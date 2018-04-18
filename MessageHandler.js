@@ -8,6 +8,7 @@ const fs = require('fs');
 // Constant Value
 const REPORT_EXP = /Report/i;
 const HELP    = 'HELP';
+const CATEGORY_MENU    = 'Categories';
 const MOD_DATE_STR = 'D';
 const PREV_DATE_LIMIT = 3;
 const MIN_YEAR_SUPPORT = 2000;
@@ -39,6 +40,9 @@ module.exports ={
     let report;
     if (message.toUpperCase() == HELP){
       return [{type: 'text', text:getHelpMessage()}];
+    }
+    else if (message.toUpperCase() == CATEGORY_MENU){
+      return [{type: 'text', text:getCategoriesMessage()}];
     }
     else if(message.match(REPORT_EXP)){ // input by menu 
       
@@ -142,23 +146,26 @@ function getHelpMessage(){
   let msg = 'Usage \n' + 
             '1. To add Expense \n ' + 
             '   Send [Category][Expense] \n' +
-            '   Where Category are \n' ;
-  for (let cat in keyToCatTbl){
-    msg +=  '   ' + cat + ' : ' + keyToCatTbl[cat] + '\n';
-  } 
-  msg +=    '   e.g. f50 = Expense Food 50 \n' + 
+            '   e.g. f50 = Expense Food 50 \n' + 
             '   By default time record is Now \n' + 
             '   If you wish to modify date\n' +
             '   You can do by 3 options as below \n' + 
             '   => Rollback : e.g. f50d1 \n' + 
             '      = Expense for yesterday\n' + 
             '      (Maximum ' + PREV_DATE_LIMIT + ' )\n' + 
-            ' => MMDD : e.g. f50d0403 = Food Expense 50 for April 3rd \n' + 
+            ' => MMDD : e.g. f50d0403 \n' + 
             '      = Expense for April 3rd\n' + 
             ' => YYYYMMDD : e.g. f50d20180408\n' + 
             '      =  Expense for 2018-04-08\n' + 
             '2. To get Report \n' +
             '   You can select report from Bulletin';
+  return msg;
+}
+function getCategoriesMessage(){
+  let msg = 'Categories : \n';
+  for (let cat in keyToCatTbl){
+    msg +=  '   ' + cat + ' : ' + keyToCatTbl[cat] + '\n';
+  } 
   return msg;
 }
 async function getReport(userId, type, target){
