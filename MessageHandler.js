@@ -3,6 +3,7 @@ const output = require('./d3-output/');
 const d3nPie = require('./d3-piechart/');
 const sharp = require('sharp');
 const svg_to_png = require('svg-to-png');
+const fs = require('fs');
 
 // Constant Value
 const REPORT_EXP = /Report/i;
@@ -51,7 +52,7 @@ module.exports ={
       }
     }
     else{
-      let numberArr = message.match(/\d+/g);
+      let numberArr = message.match(/\d+(\.\d+)?$/g);
       let strArr =  message.match(/[a-zA-Z]+/g);
   
       // start check for input by key 
@@ -206,32 +207,23 @@ function getReport(userId, type, target){
     promise.then(data => {
       let aggregatedData = aggregation(data,'category', 'cost', isRequireRaw);
       let report = dataToMsg(aggregatedData, isRequireRaw);
-      aggregatedData.sum.push({columns: [ 'label', 'value' ]} );
+
       let options = {width: 400, height: 450, };
-      d3nPie({ data: aggregatedData.sum });
-      output('./data/output', d3nPie({ data: aggregatedData.sum }),options, function(){
-        // sharp('./public/output.png')
-        //   .resize(240, 240)
-        //   .toFile('./public/preview.png', () => {
-        //     let replyMsg = [{type: 'text', text:report}];
-        //     replyMsg.push({type: 'image',
-        //       originalContentUrl: 'https://lucylinebot.herokuapp.com/output.png',
-        //       previewImageUrl: 'https://lucylinebot.herokuapp.com/preview.png'
-        //     });
-        //     resolve(replyMsg); 
-        //   });
+      output('./data/' + userId, dataToChart(aggregatedData.sum) ,options, function(){
+
         options = {compress: true};
-        svg_to_png.convert(__dirname + '/data', 'public',options) // async, returns promise 
+        svg_to_png.convert(__dirname + '/data/', 'public',options) // async, returns promise 
           .then( function(){
-            sharp('./public/output.png')
+            sharp('./public/' + userId + '.png')
               .resize(240, 240)
               .crop(sharp.strategy.entropy)
-              .toFile('./public/preview.png', () => {
+              .toFile('./public/' +  userId + '_preview.png', () => {
                 let replyMsg = [{type: 'text', text:report}];
                 replyMsg.push({type: 'image',
-                  originalContentUrl: 'https://lucylinebot.herokuapp.com/output.png',
-                  previewImageUrl: 'https://lucylinebot.herokuapp.com/preview.png'
+                  originalContentUrl: 'https://lucylinebot.herokuapp.com/' +  userId + '.png',
+                  previewImageUrl: 'https://lucylinebot.herokuapp.com/' +  userId + '_preview.png'
                 });
+                fs.unlink('./data/' + userId + '.svg');
                 resolve(replyMsg); 
               });
           });
@@ -245,6 +237,7 @@ function aggregation(queryData,groupBy, sumBy, isRequireRaw){
   let aggregated = {};
   let aggregatedArr = []; 
   let rawData = [];
+  let total = 0;
   queryData.forEach(element => {
     if (isRequireRaw){
       let data = {};
@@ -260,18 +253,22 @@ function aggregation(queryData,groupBy, sumBy, isRequireRaw){
     }else{
       aggregated[element.data()[groupBy]] = element.data()[sumBy];
     }
+    total +=  element.data()[sumBy];
   });
   for (let cat in aggregated){
-    aggregatedArr.push({label : cat, value : aggregated[cat]});
+    let label = cat + ' ( ' + parseFloat(aggregated[cat]/total*100).toFixed(2) + '% )';
+    aggregatedArr.push({label : label, value : aggregated[cat]});
   }
   return {sum : aggregatedArr, raw : rawData};
 }
 function dataToMsg(aggregatedData,isRequireRaw){
   let msg = '== Expense Summary ==';
-
+  let total = 0;
   for (let i in aggregatedData.sum){
     msg += '\n' + aggregatedData.sum[i].label + ' : ' + aggregatedData.sum[i].value;
+    total += aggregatedData.sum[i].value;
   }
+  msg += '\n Total : ' + total;
   if (isRequireRaw){
     msg += '\n== Expense Data ==';
     let prev_date = '';
@@ -283,6 +280,7 @@ function dataToMsg(aggregatedData,isRequireRaw){
       }
       msg += '\n' + aggregatedData.raw[i].category + ' : ' + aggregatedData.raw[i].expense;
     }
+    
   }
   return msg;
 }
@@ -296,4 +294,9 @@ function formatDate(date) {
   if (day.length < 2) day = '0' + day;
 
   return [year, month, day].join('-');
+}
+function dataToChart(sumData){
+
+  sumData.push({columns: [ 'label', 'value' ]} );
+  return d3nPie({ data: sumData });
 }

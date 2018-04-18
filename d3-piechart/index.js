@@ -11,12 +11,12 @@ function pie({
   `,
   style: _style = '',
   colorRange: _colorRange = undefined,
-  width: _width = 960,
+  width: _width = 500,
   height: _height = 500,
   radius: _radius = 200
 } = {}) {
   const _svgStyles = `
-    .arc text {font: 10px sans-serif; text-anchor: middle;}
+    .arc text {font: 14px sans-serif; text-anchor: middle;}
     .arc path {stroke: #fff;}
   `;
 
