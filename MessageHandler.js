@@ -19,6 +19,10 @@ const keyToCatTbl = {
   M : 'Medical',
   E : 'Entertainment',
   U : 'Utilities',
+  TV : 'Travel',
+  ED : 'Education',
+  MA : 'Maintenance',
+  ME : 'Merit',
   O : 'Other'
   // D : Reserverd for modify date
 };
