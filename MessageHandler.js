@@ -1,5 +1,5 @@
 const fbHelper = require('./firebaseHelper.js');
-const output = require('d3node-output');
+const output = require('./d3-output/');
 const d3nPie = require('./d3-piechart/');
 const sharp = require('sharp');
 
@@ -207,17 +207,24 @@ function getReport(userId, type, target){
       let report = dataToMsg(aggregatedData, isRequireRaw);
       aggregatedData.sum.push({columns: [ 'label', 'value' ]} );
       let options = {width: 400, height: 450, };
+      d3nPie({ data: aggregatedData.sum });
       output('./public/output', d3nPie({ data: aggregatedData.sum }),options, function(){
-        sharp('./public/output.png')
-          .resize(240, 240)
-          .toFile('./public/preview.png', () => {
-            let replyMsg = [{type: 'text', text:report}];
-            replyMsg.push({type: 'image',
-              originalContentUrl: 'https://lucylinebot.herokuapp.com/output.png',
-              previewImageUrl: 'https://lucylinebot.herokuapp.com/preview.png'
-            });
-            resolve(replyMsg); 
-          });
+        // sharp('./public/output.png')
+        //   .resize(240, 240)
+        //   .toFile('./public/preview.png', () => {
+        //     let replyMsg = [{type: 'text', text:report}];
+        //     replyMsg.push({type: 'image',
+        //       originalContentUrl: 'https://lucylinebot.herokuapp.com/output.png',
+        //       previewImageUrl: 'https://lucylinebot.herokuapp.com/preview.png'
+        //     });
+        //     resolve(replyMsg); 
+        //   });
+        let replyMsg = [{type: 'text', text:report}];
+        replyMsg.push({type: 'image',
+          originalContentUrl: 'https://lucylinebot.herokuapp.com/output.svg',
+          previewImageUrl: 'https://lucylinebot.herokuapp.com/output.svg'
+        });
+        resolve(replyMsg); 
       });
       
     });
