@@ -1,10 +1,12 @@
 var admin = require('firebase-admin');
 
-var serviceAccount = require('./fir-1-4004c-firebase-adminsdk-4h3lp-5a73a43c71.json');
-
+var serviceAccount = require('./firebasecert.json');
+serviceAccount['project_id'] = process.env.FB_PROJECT_ID ;
+serviceAccount['private_key_id'] = process.env.FB_PRIVATE_ID ;
+serviceAccount['client_email'] = process.env.FB_CLIENT_EMAIL ;
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://fir-1-4004c.firebaseio.com'
+  databaseURL: process.env.FBDB_URL
 });
 var db = admin.firestore();
 var userExpense = db.collection('user-expenses');
