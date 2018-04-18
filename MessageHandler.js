@@ -220,10 +220,12 @@ function getReport(userId, type, target){
         //     });
         //     resolve(replyMsg); 
         //   });
-        svg_to_png.convert(__dirname + '\\data', 'public') // async, returns promise 
+        options = {compress: true};
+        svg_to_png.convert(__dirname + '\\data', 'public',options) // async, returns promise 
           .then( function(){
             sharp('./public/output.png')
               .resize(240, 240)
+              .crop(sharp.strategy.entropy)
               .toFile('./public/preview.png', () => {
                 let replyMsg = [{type: 'text', text:report}];
                 replyMsg.push({type: 'image',
@@ -235,6 +237,8 @@ function getReport(userId, type, target){
           });
       });
     });
+  
+    
   });
 }
 function aggregation(queryData,groupBy, sumBy, isRequireRaw){
