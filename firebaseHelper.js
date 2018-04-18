@@ -10,39 +10,28 @@ var db = admin.firestore();
 var userExpense = db.collection('user-expenses');
 // [START add expense]
 module.exports ={
-  addExpense: (userId, cat, cost, timestamp)=> {
-
-    return new Promise((resolve, reject) => {
-      let postData = {
-        userId : userId,
-        category: cat,
-        cost: cost,
-        timestamp : timestamp
-      };
-      userExpense.add(postData)
-        .then((docRef)=> {
-          return resolve(docRef);
-        })
-        .catch(function(error) {
-          return reject(error);
-        });
-    });
+  addExpense: async (userId, cat, cost, timestamp)=> {
+    let postData = {
+      userId : userId,
+      category: cat,
+      cost: cost,
+      timestamp : timestamp
+    };
+    const docRef = await userExpense.add(postData)
+      .then((docRef)=> {
+        return resolve(docRef);
+      })
+      .catch(function(error) {
+        return reject(error);
+      });
+    return docRef;
   },
-  getUserExpense : (userId, timestart, timeend) =>{
-
-    return new Promise((resolve, reject) => {
-
-      userExpense
-        .where('userId', '==', userId)
-        .where('timestamp', '>=', timestart)
-        .where('timestamp', '<', timeend)
-        .get()
-        .then(snapshot => {
-          return resolve(snapshot);
-        })
-        .catch(err => {
-          return reject(err);
-        });
-    });
+  getUserExpense : async (userId, timestart, timeend)  => {
+    const snapshot = await userExpense
+      .where('userId', '==', userId)
+      .where('timestamp', '>=', timestart)
+      .where('timestamp', '<', timeend)
+      .get();
+    return snapshot;
   }
 };

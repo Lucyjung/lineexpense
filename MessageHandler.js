@@ -31,7 +31,7 @@ const MONTHLY_REPORT_KEY = 'MR';
 const YEARLY_REPORT_KEY = 'YR';
 
 module.exports ={
-  handler : (userId, message) => {
+  handler : async (userId, message) => {
     let report;
     if (message.toUpperCase() == HELP){
       return [{type: 'text', text:getHelpMessage()}];
@@ -39,16 +39,16 @@ module.exports ={
     else if(message.match(REPORT_EXP)){ // input by menu 
       
       if (message.toUpperCase().indexOf(REPORT_TYPE_DAILY) != -1){
-        report = getReport(userId,REPORT_TYPE_DAILY);
+        report = await getReport(userId,REPORT_TYPE_DAILY);
       }
       else if (message.toUpperCase().indexOf(REPORT_TYPE_MONTHY) != -1){
-        report = getReport(userId,REPORT_TYPE_MONTHY);
+        report = await getReport(userId,REPORT_TYPE_MONTHY);
       }
       else if (message.toUpperCase().indexOf(REPORT_TYPE_YEARLY) != -1){
-        report = getReport(userId,REPORT_TYPE_YEARLY);
+        report = await getReport(userId,REPORT_TYPE_YEARLY);
       }
       else if (message.toUpperCase().indexOf(REPORT_TYPE_WEEKLY) != -1){
-        report = getReport(userId,REPORT_TYPE_WEEKLY);
+        report = await getReport(userId,REPORT_TYPE_WEEKLY);
       }
     }
     else{
@@ -57,18 +57,17 @@ module.exports ={
   
       // start check for input by key 
       if(strArr[0].toUpperCase() == DAILY_REPORT_KEY){ 
-        report = getReport(userId,REPORT_TYPE_DAILY,numberArr[0]);
+        report = await getReport(userId,REPORT_TYPE_DAILY,numberArr[0]);
       }
       else if(strArr[0].toUpperCase() == MONTHLY_REPORT_KEY){ 
-        report = getReport(userId,REPORT_TYPE_MONTHY,numberArr[0]);
+        report = await getReport(userId,REPORT_TYPE_MONTHY,numberArr[0]);
       }
       else if(strArr[0].toUpperCase() == YEARLY_REPORT_KEY){ 
-        report = getReport(userId,REPORT_TYPE_YEARLY,numberArr[0]);
+        report = await getReport(userId,REPORT_TYPE_YEARLY,numberArr[0]);
       }
       // end check for input by key 
       else if (numberArr && numberArr.length > 0){
         let ret_str = '';
-        let promises = [];
         let expenses = {};
         let timestamp = getTimeAndExpense(strArr,numberArr,expenses);
         ret_str = 'Expense : ';
@@ -76,10 +75,9 @@ module.exports ={
         for(let cat in expenses){
           let cost = expenses[cat];
           ret_str = ret_str + '\n' + cat + ': ' +  cost;
-          promises.push(fbHelper.addExpense(userId,cat,cost,timestamp + index));
+          await fbHelper.addExpense(userId,cat,cost,timestamp + index);
           index++;
         }
-        Promise.all(promises);
         return [{type: 'text', text:ret_str}];
       }
       else{
@@ -159,7 +157,7 @@ function getHelpMessage(){
             '   You can select report from Bulletin';
   return msg;
 }
-function getReport(userId, type, target){
+async function getReport(userId, type, target){
   let start = new Date();
   let end = new Date();
   let isRequireRaw = true;
@@ -202,34 +200,25 @@ function getReport(userId, type, target){
     break;
   }
   /* eslint-enable no-fallthrough */
-  let promise = fbHelper.getUserExpense(userId,start.getTime() , end.getTime());
-  return new Promise((resolve)=>{
-    promise.then(data => {
-      let aggregatedData = aggregation(data,'category', 'cost', isRequireRaw);
-      let report = dataToMsg(aggregatedData, isRequireRaw);
-      let options = {width: 400, height: 450, };
-      output('./data/' + userId, dataToChart(aggregatedData.sum) ,options, function(){
-        options = {compress: true};
-        svg_to_png.convert(__dirname + '/data', 'public',options) // async, returns promise 
-          .then( function(){
-            sharp('./public/' + userId + '.png')
-              .resize(240, 240)
-              .crop(sharp.strategy.entropy)
-              .toFile('./public/' +  userId + '_preview.png', () => {
-                let replyMsg = [{type: 'text', text:report}];
-                replyMsg.push({type: 'image',
-                  originalContentUrl: 'https://lucylinebot.herokuapp.com/' +  userId + '.png',
-                  previewImageUrl: 'https://lucylinebot.herokuapp.com/' +  userId + '_preview.png'
-                });
-                fs.unlink('./data/' + userId + '.svg');
-                resolve(replyMsg); 
-              });
-          });
-      });
-    });
-  
-    
+  let data = await fbHelper.getUserExpense(userId,start.getTime() , end.getTime());
+
+  let aggregatedData = aggregation(data,'category', 'cost', isRequireRaw);
+  let report = dataToMsg(aggregatedData, isRequireRaw);
+  let options = {width: 400, height: 450, };
+  await output('./data/' + userId, dataToChart(aggregatedData.sum));
+  options = {compress: true};
+  await svg_to_png.convert(__dirname + '/data', 'public',options); 
+  await sharp('./public/' + userId + '.png')
+    .resize(240, 240)
+    .crop(sharp.strategy.entropy)
+    .toFile('./public/' +  userId + '_preview.png');
+  let replyMsg = [{type: 'text', text:report}];
+  replyMsg.push({type: 'image',
+    originalContentUrl: 'https://lucylinebot.herokuapp.com/' +  userId + '.png',
+    previewImageUrl: 'https://lucylinebot.herokuapp.com/' +  userId + '_preview.png'
   });
+  fs.unlinkSync('./data/' + userId + '.svg');
+  return (replyMsg); 
 }
 function aggregation(queryData,groupBy, sumBy, isRequireRaw){
   let aggregated = {};

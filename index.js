@@ -17,28 +17,29 @@ line.init({
   channelSecret: process.env.LINE_BOT_CHANNEL_SECRET
 });
  
-app.post('/webhook/', line.validator.validateSignature(), (req, res) => {
+app.post('/webhook/', line.validator.validateSignature(), async (req, res) => {
   // get content from request body
-  const promises = req.body.events.map(event => {
-    let replyPromise = msgHelper.handler(event.source.userId,event.message.text);
-    // reply message
-    Promise.resolve(replyPromise).then(replyMsg =>{
-      return line.client
-        .replyMessage({
-          replyToken: event.replyToken,
-          messages: replyMsg
-        });
+  let replyMsg = await msgHelper.handler(event.source.userId,event.message.text);
+  await line.client
+    .replyMessage({
+      replyToken: event.replyToken,
+      messages: replyMsg
     });
-    
+  await req.body.events.map(async (event) => {
+    // reply message
+    await line.client
+      .replyMessage({
+        replyToken: event.replyToken,
+        messages: replyMsg
+      });
   });
-  Promise
-    .all(promises)
-    .then(() => res.json({success: true}));
+    
+  res.json({success: true});
 });
  
 app.listen(process.env.PORT || 80, () => {
   /* eslint-disable no-console */
-  console.log('Example app listening on port 80!');
+  console.log('Line Expense app listening on port 80!');
   /* eslint-enable no-console */
   
 });
