@@ -8,7 +8,7 @@ const fs = require('fs');
 // Constant Value
 const REPORT_EXP = /Report/i;
 const HELP    = 'HELP';
-const CATEGORY_MENU    = 'Categories';
+const CATEGORY_MENU    = 'CATEGORIES';
 const MOD_DATE_STR = 'D';
 const PREV_DATE_LIMIT = 3;
 const MIN_YEAR_SUPPORT = 2000;
@@ -89,7 +89,7 @@ module.exports ={
         return [{type: 'text', text:ret_str}];
       }
       else{
-        return [{type: 'text', text:''}];
+        return [{type: 'text', text:'No Response from this message'}];
       }
     }
 
