@@ -212,7 +212,7 @@ function getReport(userId, type, target){
       output('./data/' + userId, dataToChart(aggregatedData.sum) ,options, function(){
 
         options = {compress: true};
-        svg_to_png.convert(__dirname + '/data/', 'public',options) // async, returns promise 
+        svg_to_png.convert(__dirname + '/data', 'public',options) // async, returns promise 
           .then( function(){
             sharp('./public/' + userId + '.png')
               .resize(240, 240)
