@@ -221,7 +221,7 @@ function getReport(userId, type, target){
         //     resolve(replyMsg); 
         //   });
         options = {compress: true};
-        svg_to_png.convert(__dirname + '\\data', 'public',options) // async, returns promise 
+        svg_to_png.convert(__dirname + '/data', 'public',options) // async, returns promise 
           .then( function(){
             sharp('./public/output.png')
               .resize(240, 240)
