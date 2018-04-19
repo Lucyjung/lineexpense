@@ -216,20 +216,21 @@ async function getReport(userId, type, target){
   let aggregatedData = aggregation(data,'category', 'cost', isRequireRaw);
   let report = dataToMsg(aggregatedData, isRequireRaw);
   let options = {width: 400, height: 450, };
-  await output('./data/' + userId, dataToChart(aggregatedData.sum));
+  let date = new Date().getTime();
+  await output('./data/' + date, dataToChart(aggregatedData.sum));
   options = {compress: true};
   await svg_to_png.convert(__dirname + '/data', 'public',options); 
-  await fs.unlink('./public/' + userId + '_preview.png');
-  await sharp('./public/' + userId + '.png')
+  
+  await sharp('./public/' + date + '.png')
     .resize(240, 240)
     .crop(sharp.strategy.entropy)
-    .toFile('./public/' +  userId + '_preview.png');
+    .toFile('./public/' +  date + '_preview.png');
   let replyMsg = [{type: 'text', text:report}];
   replyMsg.push({type: 'image',
-    originalContentUrl: 'https://lucylinebot.herokuapp.com/' +  userId + '.png',
-    previewImageUrl: 'https://lucylinebot.herokuapp.com/' +  userId + '_preview.png'
+    originalContentUrl: 'https://lucylinebot.herokuapp.com/' +  date + '.png',
+    previewImageUrl: 'https://lucylinebot.herokuapp.com/' +  date + '_preview.png'
   });
-  fs.unlinkSync('./data/' + userId + '.svg');
+  fs.unlinkSync('./data/' + date + '.svg');
   return (replyMsg); 
 }
 function aggregation(queryData,groupBy, sumBy, isRequireRaw){
