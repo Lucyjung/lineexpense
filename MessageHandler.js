@@ -74,7 +74,7 @@ module.exports ={
         report = await getReport(userId,REPORT_TYPE_YEARLY,numberArr[0]);
       }
       // end check for input by key 
-      else if (numberArr && numberArr.length > 0){
+      else if (numberArr && numberArr.length > 0 && numberArr.length == strArr.length){
         let ret_str = '';
         let expenses = {};
         let timestamp = getTimeAndExpense(strArr,numberArr,expenses);
@@ -164,7 +164,7 @@ function getHelpMessage(){
 function getCategoriesMessage(){
   let msg = 'Categories : \n';
   for (let cat in keyToCatTbl){
-    msg +=  '   ' + cat + ' : ' + keyToCatTbl[cat] + '\n';
+    msg +=  '\n   ' + cat + ' : ' + keyToCatTbl[cat];
   } 
   return msg;
 }
@@ -219,6 +219,7 @@ async function getReport(userId, type, target){
   await output('./data/' + userId, dataToChart(aggregatedData.sum));
   options = {compress: true};
   await svg_to_png.convert(__dirname + '/data', 'public',options); 
+  await fs.unlink('./public/' + userId + '_preview.png');
   await sharp('./public/' + userId + '.png')
     .resize(240, 240)
     .crop(sharp.strategy.entropy)
