@@ -219,17 +219,25 @@ async function getReport(userId, type, target){
   let date = new Date().getTime();
   await output('./data/' + date, dataToChart(aggregatedData.sum));
   options = {compress: true};
-  await svg_to_png.convert(__dirname + '/data', 'public',options); 
-  
-  await sharp('./public/' + date + '.png')
-    .resize(240, 240)
-    .crop(sharp.strategy.entropy)
-    .toFile('./public/' +  date + '_preview.png');
   let replyMsg = [{type: 'text', text:report}];
-  replyMsg.push({type: 'image',
-    originalContentUrl: 'https://lucylinebot.herokuapp.com/' +  date + '.png',
-    previewImageUrl: 'https://lucylinebot.herokuapp.com/' +  date + '_preview.png'
-  });
+  try {
+    await svg_to_png.convert(__dirname + '/data', 'public',options); 
+  
+    await sharp('./public/' + date + '.png')
+      .resize(240, 240)
+      .crop(sharp.strategy.entropy)
+      .toFile('./public/' +  date + '_preview.png');
+    replyMsg.push({type: 'image',
+      originalContentUrl: 'https://lucylinebot.herokuapp.com/' +  date + '.png',
+      previewImageUrl: 'https://lucylinebot.herokuapp.com/' +  date + '_preview.png'
+    });
+  }catch (err){
+    /* eslint-disable no-console */
+    console.error(err);
+    /* eslint-enable no-console */
+  }
+  
+  
   fs.unlinkSync('./data/' + date + '.svg');
   return (replyMsg); 
 }
