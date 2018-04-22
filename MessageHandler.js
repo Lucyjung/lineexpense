@@ -270,9 +270,9 @@ function aggregation(queryData,groupBy, sumBy, isRequireRaw){
   return {sum : aggregatedArr, raw : rawData};
 }
 function dataToMsg(aggregatedData,isRequireRaw){
-  let msg =   '======================\n' +
-              '|  Expense Summary   |\n' + 
-              '======================';
+  let msg =   '==================\n' +
+              '|  Expense Summary     |\n' + 
+              '===================';
   let total = 0;
   for (let i in aggregatedData.sum){
     msg += '\n|' + aggregatedData.sum[i].label + ' : ' + parseFloat(aggregatedData.sum[i].value).toFixed(2);
@@ -280,9 +280,9 @@ function dataToMsg(aggregatedData,isRequireRaw){
   }
   msg += '\n Total : ' + total;
   if (isRequireRaw){
-    msg += '\n======================' +
-           '\n|  Expense Data      |' + 
-           '\n======================';       
+    msg += '\n===================' +
+           '\n|  Expense Data        |' + 
+           '\n===================';       
     let prev_date = '';
     for (let i in aggregatedData.raw){
       let date = formatDate(aggregatedData.raw[i].timestamp) ;
