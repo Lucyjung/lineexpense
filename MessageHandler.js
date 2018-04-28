@@ -60,7 +60,7 @@ module.exports ={
       }
     }
     else{
-      let numberArr = message.match(/\d+(\.\d+)?$/g);
+      let numberArr = message.match(/\d+(\.\d+)?/g);
       let strArr =  message.match(/[a-zA-Z]+/g);
   
       // start check for input by key 
