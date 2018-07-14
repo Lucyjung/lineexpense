@@ -184,7 +184,7 @@ async function getReport(userId, type, target){
       start.setFullYear(target);
       end.setFullYear(target);
     }
-    isRequireRaw = false;
+    
     start.setMonth(1);
     end.setMonth(12);
   case REPORT_TYPE_MONTHY:
@@ -195,6 +195,7 @@ async function getReport(userId, type, target){
     start.setDate(1);
     end.setMonth(end.getMonth() + 1);
     end.setDate(0);
+    isRequireRaw = false;
   case REPORT_TYPE_DAILY:
     if (type == REPORT_TYPE_DAILY && 
       target && target > 0 && target < 31){
