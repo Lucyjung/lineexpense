@@ -20,13 +20,22 @@ line.init({
 app.post('/webhook/', line.validator.validateSignature(), async (req, res) => {
   // get content from request body
   await req.body.events.map(async (event) => {
-    let replyMsg = await msgHelper.handler(event.source.userId,event.message.text);
-    // reply message
-    await line.client
-      .replyMessage({
-        replyToken: event.replyToken,
-        messages: replyMsg
-      });
+    try {
+      let replyMsg = await msgHelper.handler(event.source.userId,event.message.text);
+      // reply message
+      await line.client
+        .replyMessage({
+          replyToken: event.replyToken,
+          messages: replyMsg
+        });
+    }catch(err){
+      await line.client
+        .replyMessage({
+          replyToken: event.replyToken,
+          messages: 'Process error'
+        });
+    }
+    
   });
     
   res.json({success: true});
