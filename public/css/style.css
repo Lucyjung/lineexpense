@@ -103,20 +103,6 @@ html {
     }
   }
   
-  /* Same as above, modified for operators */
-  .ops:focus::after {
-    content: attr(data-ops);
-    margin-left: -210px;
-    width: 420px;
-  }
-  
-  /* Same as above, modified for result */
-  .equals:focus::after {
-    content: attr(data-result);
-    margin-left: -300px;
-    width: 600px;
-  }
-  
   /* Reset button */
   
   .reset {
