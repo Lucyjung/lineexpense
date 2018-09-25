@@ -3,7 +3,12 @@ window.onload = function (e) {
   liff.init(function (data) {
     
   });
-  $( '#datepicker' ).datepicker();
+  $( '#datepicker' ).pickadate({
+    formatSubmit: 'yyyy/mm/dd',
+    format: 'yyyy/mm/dd',
+    selectYears: true,
+    selectMonths: true
+  });
 };
 
 /*
