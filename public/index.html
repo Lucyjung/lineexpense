@@ -11,12 +11,13 @@
     <meta name="author" content="Narut">
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/jquery-ui.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 
   </head>
   <body>
 
-    <div class="container-fluid">
+  <div class="container-fluid">
 	<div class="row">
 		<div class="col-md-12">
 			<div class="btn-group" role="group">
@@ -34,43 +35,49 @@
 					Entertain
 				</button>
 			</div>
-        </div>
-        <div class="col-md-12">
-            <div id="calculator" class="calculator">
+    </div>
+    <div class="col-md-12">
+      <input type="text" id="datepicker">
+    </div>
+    <div class="col-md-12">
+        <div id="calculator" class="calculator">
 
-                <button id="clear" class="clear">C</button>
-              
-                <div id="viewer" class="viewer">0</div>
-              
-                <button class="num" data-num="7">7</button>
-                <button class="num" data-num="8">8</button>
-                <button class="num" data-num="9">9</button>
-                <button data-ops="plus" class="ops">+</button>
-              
-                <button class="num" data-num="4">4</button>
-                <button class="num" data-num="5">5</button>
-                <button class="num" data-num="6">6</button>
-                <button data-ops="minus" class="ops">-</button>
-              
-                <button class="num" data-num="1">1</button>
-                <button class="num" data-num="2">2</button>
-                <button class="num" data-num="3">3</button>
-                <button data-ops="times" class="ops">*</button>
-              
-                <button class="num" data-num="0">0</button>
-                <button class="num" data-num=".">.</button>
-                <button id="equals" class="equals" data-result="">=</button>
-                <button data-ops="divided by" class="ops">/</button>
-              </div>
-              
-              <button id="reset" class="reset">Reset Universe?</button>
-        </div>
+            <button id="clear" class="clear">C</button>
+          
+            <div id="viewer" class="viewer">0</div>
+          
+            <button class="num" data-num="7">7</button>
+            <button class="num" data-num="8">8</button>
+            <button class="num" data-num="9">9</button>
+            <button data-ops="plus" class="ops">+</button>
+          
+            <button class="num" data-num="4">4</button>
+            <button class="num" data-num="5">5</button>
+            <button class="num" data-num="6">6</button>
+            <button data-ops="minus" class="ops">-</button>
+          
+            <button class="num" data-num="1">1</button>
+            <button class="num" data-num="2">2</button>
+            <button class="num" data-num="3">3</button>
+            <button data-ops="times" class="ops">*</button>
+          
+            <button class="num" data-num="0">0</button>
+            <button class="num" data-num=".">.</button>
+            <button id="equals" class="equals" data-result="">=</button>
+            <button data-ops="divided by" class="ops">/</button>
+          </div>
+          
+          <button id="reset" class="reset">Reset Universe?</button>
+    </div>
 	</div>
 </div>
     
     <script src="js/jquery.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
     <script src="js/scripts.js"></script>
   </body>
 </html>
