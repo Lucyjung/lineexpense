@@ -9,8 +9,43 @@ window.onload = function (e) {
     selectYears: true,
     selectMonths: true
   });
-};
+  $( '#datepicker' ).val(moment().format('YYYY/MM/DD'));
+  $.ajax({
+    method: 'GET',
+    url: 'categories'
+  })
+    .done(function( categories ) {
+      for (let key in categories){
+        let html = '<button class="btn btn-secondary" type="button">' + key+ '</button>';
+        $('#btn-categories').append(html);
+      }
+      $('#btn-categories button').click(function() {
+        $(this).addClass('active').siblings().removeClass('active');
+        $('#txt-categories').html(categories[$( this ).html()]);
 
+      });
+    });
+};
+$('#btn-submit').click(function() {
+  let cat = $('#btn-categories .active').html();
+  let cost = $('#viewer').html();
+  let msg = cat + cost;
+  if (cat && cat != '' && cost != 0){
+    liff.sendMessages([{
+      type: 'text',
+      text: msg
+    }]).then(function () {
+      window.alert("Message sent");
+    }).catch(function (error) {
+      window.alert("Error sending message: " + error);
+    });
+  }
+
+});
+$('#btn-close').click(function() {
+  liff.closeWindow();
+
+});
 /*
 TODO:
     Limit number input
