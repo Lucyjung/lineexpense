@@ -16,15 +16,6 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.get('/categories/',  async (req, res) => {
-  // get content from request body
-  let categories = await msgHelper.categories();
-
-
-    
-  res.json(categories);
-});
-
 app.use(express.static('public'));
 // init with auth
 line.init({

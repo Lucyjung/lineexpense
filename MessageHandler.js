@@ -95,9 +95,6 @@ module.exports ={
 
     return report;
     
-  },
-  categories : async (userId)=>{
-    return keyToCatTbl;
   }
 };
 function keyToCategory(input){
