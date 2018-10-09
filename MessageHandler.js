@@ -95,6 +95,10 @@ module.exports ={
 
     return report;
     
+  },
+  report : async (userId, period, selectPeriod )=>{
+    let data = await getReportData(userId,period,selectPeriod);
+    return data;
   }
 };
 function keyToCategory(input){
@@ -168,7 +172,7 @@ function getCategoriesMessage(){
   } 
   return msg;
 }
-async function getReport(userId, type, target){
+async function getReportData(userId, type, target){
   let start = new Date();
   let end = new Date();
   let isRequireRaw = true;
@@ -215,7 +219,13 @@ async function getReport(userId, type, target){
   let data = await fbHelper.getUserExpense(userId,start.getTime() , end.getTime());
 
   let aggregatedData = aggregation(data,'category', 'cost', isRequireRaw);
-  let report = dataToMsg(aggregatedData, isRequireRaw);
+
+  return aggregatedData;
+}
+async function getReport(userId, type, target){
+  
+  let aggregatedData = await getReportData(userId, type, target);
+  let report = dataToMsg(aggregatedData);
   let options = {width: 400, height: 450, };
   let date = new Date().getTime();
   await output('./data/' + date, dataToChart(aggregatedData.sum));
@@ -270,7 +280,7 @@ function aggregation(queryData,groupBy, sumBy, isRequireRaw){
   }
   return {sum : aggregatedArr, raw : rawData};
 }
-function dataToMsg(aggregatedData,isRequireRaw){
+function dataToMsg(aggregatedData){
   let msg =   '===================\n' +
               '|  Expense Summary       |\n' + 
               '===================';
@@ -280,7 +290,7 @@ function dataToMsg(aggregatedData,isRequireRaw){
     total += aggregatedData.sum[i].value;
   }
   msg += '\n Total : ' + total;
-  if (isRequireRaw){
+  if (aggregatedData.raw.length > 0){
     msg += '\n===================' +
            '\n|  Expense Data            |' + 
            '\n===================';       

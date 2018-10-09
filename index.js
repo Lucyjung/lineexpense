@@ -16,6 +16,16 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.get('/report/:id',  async (req, res) => {
+
+  let data = {msg: 'Parameter period and select are required'};
+  if (req.query.period && req.query.select){
+    data = await msgHelper.report(req.params.id, req.query.period, req.query.select);
+  }
+  
+  res.json(data);
+});
+
 app.use(express.static('public'));
 // init with auth
 line.init({
