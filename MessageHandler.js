@@ -97,7 +97,7 @@ module.exports ={
     
   },
   report : async (userId, period, selectPeriod )=>{
-    let data = await getReportData(userId,period,selectPeriod);
+    let data = await getReportData(userId,period,selectPeriod, true);
     return data;
   }
 };
@@ -172,7 +172,7 @@ function getCategoriesMessage(){
   } 
   return msg;
 }
-async function getReportData(userId, type, target){
+async function getReportData(userId, type, target, isAPICalled){
   let start = new Date();
   let end = new Date();
   let isRequireRaw = true;
@@ -214,6 +214,9 @@ async function getReportData(userId, type, target){
     start.setHours(0,0,0,0);
     end.setHours(23,59,59,999);
     break;
+  }
+  if (isAPICalled){
+    isRequireRaw = true;
   }
   /* eslint-enable no-fallthrough */
   let data = await fbHelper.getUserExpense(userId,start.getTime() , end.getTime());
