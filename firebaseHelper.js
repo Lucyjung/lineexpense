@@ -28,5 +28,18 @@ module.exports ={
       .where('timestamp', '<', timeend)
       .get();
     return snapshot;
+  },
+  updateExpense: async (expenseId, userId, cat, cost, timestamp)=> {
+    let postData = {
+      userId : userId,
+      category: cat,
+      cost: cost,
+      timestamp : timestamp
+    };
+    return await userExpense.doc(expenseId).add(postData);
+  },
+  deleteExpense: async (expenseId)=> {
+
+    return await userExpense.doc(expenseId).delete();
   }
 };

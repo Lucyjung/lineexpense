@@ -260,6 +260,7 @@ function aggregation(queryData,groupBy, sumBy, isRequireRaw){
   queryData.forEach(element => {
     if (isRequireRaw){
       let data = {};
+      data.id = element.id;
       data.expense = element.data()[sumBy];
       data.category = element.data()[groupBy];
       let d = new Date(element.data().timestamp);
