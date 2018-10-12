@@ -102,7 +102,7 @@ module.exports ={
   },
   updateExpense : async (expenseId, userId, cat, cost, timestamp )=>{
     let d = new Date(timestamp);
-    let data = await fbHelper.updateExpense(expenseId, userId, parseFloat(cat), cost, d.getTime());
+    let data = await fbHelper.updateExpense(expenseId, userId, cat, parseFloat(cost), d.getTime());
     return data;
   },
   deleteExpense : async (expenseId )=>{
