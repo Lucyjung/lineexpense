@@ -96,7 +96,7 @@ module.exports ={
     return report;
     
   },
-  report : async (userId, expenseId, period, selectPeriod  )=>{
+  report : async (userId, period, selectPeriod  )=>{
     let data = await getReportData(userId,period,selectPeriod, true);
     return data;
   },
@@ -105,7 +105,7 @@ module.exports ={
     return data;
   },
   deleteExpense : async (expenseId )=>{
-    let data = await getReportData(expenseId);
+    let data = await fbHelper.deleteExpense(expenseId);
     return data;
   }
 };
