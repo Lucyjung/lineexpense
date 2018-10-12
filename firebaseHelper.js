@@ -33,8 +33,8 @@ module.exports ={
     let postData = {
       userId : userId,
       category: cat,
-      cost: parseInt(cost),
-      timestamp : parseInt(timestamp)
+      cost: cost,
+      timestamp : timestamp
     };
     return await userExpense.doc(expenseId).set(postData);
   },
