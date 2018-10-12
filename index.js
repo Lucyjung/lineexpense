@@ -39,6 +39,14 @@ app.post('/expense/:id',  async (req, res) => {
   res.json(data);
 });
 
+app.delete('/expense/:id',  async (req, res) => {
+
+  let data = {msg: 'Parameter(s) are required'};
+  data = await msgHelper.deleteExpense(req.params.id);
+  
+  res.json(data);
+});
+
 app.use(express.static('public'));
 // init with auth
 line.init({
