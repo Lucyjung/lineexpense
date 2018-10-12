@@ -36,7 +36,7 @@ module.exports ={
       cost: cost,
       timestamp : timestamp
     };
-    return await userExpense.doc(expenseId).add(postData);
+    return await userExpense.doc(expenseId).set(postData);
   },
   deleteExpense: async (expenseId)=> {
 

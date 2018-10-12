@@ -96,8 +96,16 @@ module.exports ={
     return report;
     
   },
-  report : async (userId, period, selectPeriod )=>{
+  report : async (userId, expenseId, period, selectPeriod  )=>{
     let data = await getReportData(userId,period,selectPeriod, true);
+    return data;
+  },
+  updateExpense : async (expenseId, userId, cat, cost, timestamp )=>{
+    let data = await fbHelper.updateExpense(expenseId, userId, cat, cost, timestamp);
+    return data;
+  },
+  deleteExpense : async (expenseId )=>{
+    let data = await getReportData(expenseId);
     return data;
   }
 };

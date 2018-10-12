@@ -25,6 +25,15 @@ app.get('/report/:id',  async (req, res) => {
   
   res.json(data);
 });
+app.patch('/expense/:id',  async (req, res) => {
+
+  let data = {msg: 'Parameter(s) are required'};
+  if (req.body.userId && req.body.cat && req.body.cost && req.body.timestamp){
+    data = await msgHelper.updateExpense(req.params.id, req.body.userId, req.body.cat, req.body.cost, req.body.timestamp);
+  }
+  
+  res.json(data);
+});
 
 app.use(express.static('public'));
 // init with auth
