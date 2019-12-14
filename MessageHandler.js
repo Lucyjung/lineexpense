@@ -1,9 +1,4 @@
 const fbHelper = require('./firebaseHelper.js');
-const output = require('./d3-output/');
-const d3nPie = require('./d3-piechart/');
-const sharp = require('sharp');
-const svg_to_png = require('svg-to-png');
-const fs = require('fs');
 
 // Constant Value
 const REPORT_EXP = /Report/i;
@@ -238,30 +233,9 @@ async function getReport(userId, type, target){
   
   let aggregatedData = await getReportData(userId, type, target);
   let report = dataToMsg(aggregatedData);
-  let options = {width: 400, height: 450, };
-  let date = new Date().getTime();
-  await output('./data/' + date, dataToChart(aggregatedData.sum));
-  options = {compress: true};
+
   let replyMsg = [{type: 'text', text:report}];
-  try {
-    await svg_to_png.convert(__dirname + '/data', 'public',options); 
-  
-    await sharp('./public/' + date + '.png')
-      .resize(240, 240)
-      .crop(sharp.strategy.entropy)
-      .toFile('./public/' +  date + '_preview.png');
-    replyMsg.push({type: 'image',
-      originalContentUrl: 'https://lucylinebot.herokuapp.com/' +  date + '.png',
-      previewImageUrl: 'https://lucylinebot.herokuapp.com/' +  date + '_preview.png'
-    });
-  }catch (err){
-    /* eslint-disable no-console */
-    console.error(err);
-    /* eslint-enable no-console */
-  }
-  
-  
-  fs.unlinkSync('./data/' + date + '.svg');
+
   return (replyMsg); 
 }
 function aggregation(queryData,groupBy, sumBy, isRequireRaw){
@@ -330,9 +304,4 @@ function formatDate(date) {
   if (day.length < 2) day = '0' + day;
 
   return [year, month, day].join('-');
-}
-function dataToChart(sumData){
-
-  sumData.push({columns: [ 'label', 'value' ]} );
-  return d3nPie({ data: sumData });
 }

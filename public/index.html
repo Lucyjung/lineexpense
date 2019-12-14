@@ -11,8 +11,7 @@
     <meta name="author" content="Narut">
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/default.css" rel="stylesheet">
-    <link href="css/default.date.css" rel="stylesheet">
+    <link href="css/datepicker.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
     <link href="css/style.css" rel="stylesheet">
     
@@ -30,9 +29,10 @@
     </div>
   </div>
   <div class="row" style="vertical-align: middle;">
-    <div class="col-3" style="padding: 10px;" id="txt-categories"> </div>
-    <div class="col-9">
-        <input type="text" id="datepicker" style="margin-top: 10px;">
+    <div class="col-12">
+        <div class="external-container">
+            <input id="demo-external" class="demo-non-form" value="22:10 03/27/2018"/>
+        </div>
     </div>
   </div>
   <div class="row">
@@ -63,8 +63,7 @@
             <button id="equals" class="equals" data-result="">=</button>
             <button data-ops="divided by" class="ops">/</button>
           </div>
-          
-          <button id="reset" class="reset">Reset Universe?</button>
+ 
     </div>
 	</div>
 </div>
@@ -78,16 +77,28 @@
         </button>
     </div>
 </div>
+<div class="modal" tabindex="-1" role="dialog" id="modal-popup">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="modal-msg"></h5>
 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
+        </div>
+      </div>
+    </div>
+  </div>
     <script src="js/jquery.min.js"></script>
-    <script src="/js/moment.min.js"></script>
+    <script src="js/moment.min.js"></script>
     <script src="js/popper.min.js"></script>
     <script src="https://npmcdn.com/tether@1.2.4/dist/js/tether.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
-    <script src="https://d.line-scdn.net/liff/1.0/sdk.js"></script>
-    <script src="js/picker.js"></script>
-    <script src="js/picker.date.js"></script>
+    <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+    <script src="js/bootstrap-datepicker.js"></script>
     <script src="js/legacy.js"></script>
+    <script src="js/global.js"></script>
     <script src="js/scripts.js"></script>
   </body>
 </html>

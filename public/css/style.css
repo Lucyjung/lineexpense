@@ -215,3 +215,19 @@ html {
       margin: 0.5em;
     }
   }
+.icon-center{
+  display:block;
+  font-size: xx-small;
+}
+.external-container {
+  display: flex;
+}
+.demo-non-form{
+  width: 100%;
+  text-align: center;
+  margin-top: 10px;
+  border: inset;
+}
+.btn-fix-size{
+  width: 55px;
+}
