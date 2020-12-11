@@ -4,6 +4,7 @@ const fbHelper = require('./firebaseHelper.js');
 const REPORT_EXP = /Report/i;
 const HELP    = 'HELP';
 const CATEGORY_MENU    = 'CATEGORIES';
+const DEBT_MENU    = 'DEBT';
 const MOD_DATE_STR = 'D';
 const PREV_DATE_LIMIT = 3;
 const MIN_YEAR_SUPPORT = 2000;
@@ -39,6 +40,9 @@ module.exports ={
     }
     else if (message.toUpperCase() == CATEGORY_MENU){
       return [{type: 'text', text:getCategoriesMessage()}];
+    }
+    else if (message.toUpperCase() == DEBT_MENU){
+      return [{type: 'text', text: 'https://liff.line.me/1653949405-VNlagD7p'}];
     }
     else if(message.match(REPORT_EXP)){ // input by menu 
       
