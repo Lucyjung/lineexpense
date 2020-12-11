@@ -66,7 +66,7 @@ module.exports ={
       for (let response of responses){
         response.forEach(item =>{
           const expense = item.data();
-          result.push({category: expense.category, cost : expense.cost, tag : expense.tag});
+          result.push({category: expense.category, cost : expense.cost, tag : expense.tag, timestamp : expense.timestamp});
         });
       }
       
