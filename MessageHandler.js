@@ -7,6 +7,7 @@ const CATEGORY_MENU    = 'CATEGORIES';
 const MOD_DATE_STR = 'D';
 const PREV_DATE_LIMIT = 3;
 const MIN_YEAR_SUPPORT = 2000;
+const TAG_SIGN = '#';
 const keyToCatTbl = {
   F : 'Food',
   T : 'Traffic',
@@ -55,6 +56,12 @@ module.exports ={
       }
     }
     else{
+      let tag = '';
+      let tagIdx = message.indexOf(TAG_SIGN);
+      if (tagIdx > -1 ){
+        tag = message.slice(tagIdx);
+        message = message.slice(0,tagIdx);
+      }
       let numberArr = message.match(/\d+(\.\d+)?/g);
       let strArr =  message.match(/[a-zA-Z]+/g);
   
@@ -78,7 +85,7 @@ module.exports ={
         for(let cat in expenses){
           let cost = expenses[cat];
           ret_str = ret_str + '\n' + cat + ': ' +  cost;
-          await fbHelper.addExpense(userId,cat,cost,timestamp + index);
+          await fbHelper.addExpense(userId,cat,cost,timestamp + index, tag);
           index++;
         }
         return [{type: 'text', text:ret_str}];
@@ -249,6 +256,7 @@ function aggregation(queryData,groupBy, sumBy, isRequireRaw){
       data.id = element.id;
       data.expense = element.data()[sumBy];
       data.category = element.data()[groupBy];
+      data.tag = element.data()['tag'];
       let d = new Date(element.data().timestamp);
       data.timestamp = d;
       rawData.push(data);
@@ -289,6 +297,9 @@ function dataToMsg(aggregatedData){
         prev_date = date;
       }
       msg += '\n' + aggregatedData.raw[i].category + ' : ' + aggregatedData.raw[i].expense;
+      if (aggregatedData.raw[i].tag){
+        msg += ' ' + aggregatedData.raw[i].tag;
+      }
     }
     
   }

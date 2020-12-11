@@ -3,6 +3,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const msgHelper = require('./MessageHandler.js');
+const debtHandler = require('./DebtHandler.js');
 // need raw buffer for signature validation
 app.use(bodyParser.json({
   verify (req, res, buf) {
@@ -46,6 +47,13 @@ app.delete('/expense/:id',  async (req, res) => {
   
   res.json(data);
 });
+
+/* Debt Handler */
+app.get('/debt/:id',  debtHandler.getDebt);
+app.get('/debtExpense/:id',  debtHandler.getDebtExpense);
+app.post('/debt',  debtHandler.addDebt);
+app.put('/debt/:id',  debtHandler.updateDebt);
+app.delete('/debt/:id',  debtHandler.deleteDebt);
 
 app.use(express.static('public'));
 // init with auth
