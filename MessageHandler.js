@@ -205,7 +205,7 @@ async function getReportData(userId, type, target, isAPICalled){
     }
     
     start.setMonth(0);
-    end.setMonth(12);
+    end.setMonth(11);
   case REPORT_TYPE_MONTHY:
     if (target && target > 0 && target < 12){
       start.setMonth(target - 1);
