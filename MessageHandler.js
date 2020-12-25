@@ -103,7 +103,7 @@ module.exports ={
           index++;
         }
         let totalStr = numberWithCommas(total);
-        return [genFlexExpenseMessage('Expense ' + totalStr, totalStr,detail, timestamp, tag)];
+        return [genFlexExpenseMessage('Expense ' + totalStr, totalStr,detail, formatDate(timestamp), tag)];
       }
       else{
         return [{type: 'text', text:'No Response from this message'}];
@@ -250,7 +250,8 @@ async function getReportData(userId, type, target, isAPICalled){
   let data = await fbHelper.getUserExpense(userId,start.getTime() , end.getTime());
 
   let aggregatedData = aggregation(data,'category', 'cost', isRequireRaw);
-
+  aggregatedData.start = start.getTime();
+  aggregatedData.end = end.getTime();
   return aggregatedData;
 }
 async function getReport(userId, type, target){
@@ -329,14 +330,14 @@ function dataToFlex(aggregatedData){
   let isRaw = aggregatedData.raw.length > 0;
   const detail = [];
   for (let i in aggregatedData.sum){
-    detail.push({key: aggregatedData.sum[i].label, value : parseFloat(aggregatedData.sum[i].value)});
+    detail.push({key: aggregatedData.sum[i].label, value : numberWithCommas(parseFloat(aggregatedData.sum[i].value))});
     total += aggregatedData.sum[i].value;
   }
   let totalStr = numberWithCommas(total);
   title += ' : ' + totalStr;
   if (isRaw){    
     let prev_date = '';
-    detail.push({key: '------------- Expense Data -------------', value : ''});
+    detail.push({key: '----------------- Expense Data -----------------', value : ''});
     for (let i in aggregatedData.raw){
       let date = formatDate(aggregatedData.raw[i].timestamp) ;
       if (prev_date != date){
@@ -347,7 +348,7 @@ function dataToFlex(aggregatedData){
       let tmpDetail = {key : aggregatedData.raw[i].category, value : numberWithCommas(aggregatedData.raw[i].expense) };
 
       if (aggregatedData.raw[i].tag){
-        tmpDetail.value += ' ' + aggregatedData.raw[i].tag;
+        tmpDetail.value = aggregatedData.raw[i].tag + ' ' + tmpDetail.value;
       }
       detail.push(tmpDetail);
     }
@@ -356,8 +357,11 @@ function dataToFlex(aggregatedData){
 
   header += 'Total : ' + totalStr; 
 
-  let now = new Date();
-  return genFlexExpenseMessage(title, header, detail, now.getTime());
+  let periodStr = formatDate(aggregatedData.start); 
+  if (formatDate(aggregatedData.start) != formatDate(aggregatedData.end)){
+    periodStr += '~' + formatDate(aggregatedData.end);
+  }
+  return genFlexExpenseMessage(title, header, detail, periodStr);
 }
 function formatDate(date) {
   var d = new Date(date),
@@ -449,7 +453,7 @@ function genFlexMessage(title, message, link, linkMsg, img){
   }
   return flex;
 }
-function genFlexExpenseMessage(title, header, detail, timestamp, tag){
+function genFlexExpenseMessage(title, header, detail, period, tag){
   const contents = [];
   const footer = [];
   if (tag){
@@ -466,7 +470,7 @@ function genFlexExpenseMessage(title, header, detail, timestamp, tag){
   footer.push(
     {
       'type': 'text',
-      'text': formatDate(timestamp),
+      'text': period,
       'color': '#aaaaaa',
       'size': 'xs',
       'align': 'end'
