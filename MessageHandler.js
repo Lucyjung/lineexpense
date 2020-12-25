@@ -260,7 +260,7 @@ async function getReport(userId, type, target){
 
   // let replyMsg = [{type: 'text', text:report}];
 
-  return dataToFlex(aggregatedData); 
+  return [dataToFlex(aggregatedData)]; 
 }
 function aggregation(queryData,groupBy, sumBy, isRequireRaw){
   let aggregated = {};
