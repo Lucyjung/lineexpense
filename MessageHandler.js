@@ -140,13 +140,15 @@ module.exports ={
         let timestamp = getTimeAndExpense(strArr,numberArr,expenses);
         ret_str = '';
         let index = 0;
+        let total = 0
         for(let cat in expenses){
           let cost = expenses[cat];
-          ret_str = ret_str + '\n' + cat + ': ' +  cost;
+          //ret_str = ret_str + '\n' + cat + ': ' +  cost;
+          total += cost
           await fbHelper.addExpense(userId,cat,cost,timestamp + index, tag);
           index++;
         }
-        return [genFlexMessage('Expense', ret_str)];
+        return [genFlexExpenseMessage(numberWithCommas(total),expenses, timestamp)];
       }
       else{
         return [{type: 'text', text:'No Response from this message'}];
@@ -376,6 +378,9 @@ function formatDate(date) {
 
   return [year, month, day].join('-');
 }
+function numberWithCommas(x) {
+  return x.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 function genFlexMessage(title, message, link, linkMsg, img){
   const flex = {type: 'flex', altText: title ,contents: {
     type: 'bubble',
@@ -436,7 +441,7 @@ function genFlexMessage(title, message, link, linkMsg, img){
     }
   }
   if (img){
-    flex.hero = {
+    flex.contents.hero = {
       "type": "image",
       "url": img,
       "size": "full",
@@ -447,6 +452,92 @@ function genFlexMessage(title, message, link, linkMsg, img){
       flex.hero.action = {
         "type": "uri",
         "uri": link
+      }
+    }
+  }
+  return flex;
+}
+function genFlexExpenseMessage(total, expenses, timestamp){
+  const contents = []
+  for(let cat in expenses){
+    let cost = expenses[cat];
+    contents.push(
+      {
+        "type": "box",
+        "layout": "horizontal",
+        "contents": [
+          {
+            "type": "text",
+            "text": cat +  " " + tag,
+            "size": "sm",
+            "color": "#555555",
+            "flex": 0
+          },
+          {
+            "type": "text",
+            "text": "฿" + cost,
+            "size": "sm",
+            "color": "#111111",
+            "align": "end"
+          }
+        ]
+      },
+    )
+  }
+  const flex = {
+    "type": "bubble",
+    "body": {
+      "type": "box",
+      "layout": "vertical",
+      "contents": [
+        {
+          "type": "text",
+          "text": "Expense",
+          "weight": "bold",
+          "color": "#1DB446",
+          "size": "sm"
+        },
+        {
+          "type": "text",
+          "text": total,
+          "weight": "bold",
+          "size": "xxl",
+          "margin": "md"
+        },
+        {
+          "type": "separator",
+          "margin": "xxl"
+        },
+        {
+          "type": "box",
+          "layout": "vertical",
+          "margin": "xxl",
+          "spacing": "sm",
+          "contents": contents
+        },
+        {
+          "type": "separator",
+          "margin": "xxl"
+        },
+        {
+          "type": "box",
+          "layout": "horizontal",
+          "margin": "md",
+          "contents": [
+            {
+              "type": "text",
+              "text": formatDate(timestamp),
+              "color": "#aaaaaa",
+              "size": "xs",
+              "align": "end"
+            }
+          ]
+        }
+      ]
+    },
+    "styles": {
+      "footer": {
+        "separator": true
       }
     }
   }
