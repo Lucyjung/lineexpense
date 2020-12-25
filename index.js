@@ -75,11 +75,12 @@ app.post('/webhook/', line.validator.validateSignature(), async (req, res) => {
           messages: replyMsg
         });
     }catch(err){
-      await line.client
-        .replyMessage({
-          replyToken: event.replyToken,
-          messages: 'Process error'
-        });
+      // await line.client
+      //   .replyMessage({
+      //     replyToken: event.replyToken,
+      //     messages: 'Process error'
+      //   });
+      console.log(err)
     }
     
   });
