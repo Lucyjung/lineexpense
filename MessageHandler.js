@@ -46,11 +46,11 @@ module.exports ={
     }
     else if (message.toUpperCase() == DEBT_MENU){
       return [genFlexMessage(
-      'Debt Report', 
-      'Debt', 
-      'https://liff.line.me/1653949405-VNlagD7p', 
-      'LINK', 
-      'https://firebasestorage.googleapis.com/v0/b/fir-1-4004c.appspot.com/o/credit_card_logo.png?alt=media&token=0fe5811c-da59-4089-ac42-7fa011cdb8d2')]
+        'Debt Report', 
+        'Debt', 
+        'https://liff.line.me/1653949405-VNlagD7p', 
+        'LINK', 
+        'https://firebasestorage.googleapis.com/v0/b/fir-1-4004c.appspot.com/o/credit_card_logo.png?alt=media&token=0fe5811c-da59-4089-ac42-7fa011cdb8d2')];
     }
     else if(message.match(REPORT_EXP)){ // input by menu 
       
@@ -89,20 +89,18 @@ module.exports ={
       }
       // end check for input by key 
       else if (numberArr && numberArr.length > 0 && numberArr.length == strArr.length){
-        let ret_str = '';
         let expenses = {};
         let timestamp = getTimeAndExpense(strArr,numberArr,expenses);
-        ret_str = '';
         let index = 0;
-        let total = 0
+        let total = 0;
         for(let cat in expenses){
           let cost = expenses[cat];
           //ret_str = ret_str + '\n' + cat + ': ' +  cost;
-          total += cost
+          total += cost;
           //await fbHelper.addExpense(userId,cat,cost,timestamp + index, tag);
           index++;
         }
-        return [genFlexExpenseMessage(numberWithCommas(total),expenses, timestamp)];
+        return [genFlexExpenseMessage(numberWithCommas(total),expenses, timestamp, tag)];
       }
       else{
         return [{type: 'text', text:'No Response from this message'}];
@@ -333,7 +331,7 @@ function formatDate(date) {
   return [year, month, day].join('-');
 }
 function numberWithCommas(x) {
-  return x.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  return x.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 function genFlexMessage(title, message, link, linkMsg, img){
   const flex = {type: 'flex', altText: title ,contents: {
@@ -349,23 +347,23 @@ function genFlexMessage(title, message, link, linkMsg, img){
           size: 'xl'
         },
         {
-          "type": "box",
-          "layout": "vertical",
-          "margin": "lg",
-          "spacing": "sm",
-          "contents": [
+          'type': 'box',
+          'layout': 'vertical',
+          'margin': 'lg',
+          'spacing': 'sm',
+          'contents': [
             {
-              "type": "box",
-              "layout": "baseline",
-              "spacing": "sm",
-              "contents": [
+              'type': 'box',
+              'layout': 'baseline',
+              'spacing': 'sm',
+              'contents': [
                 {
-                  "type": "text",
-                  "text": message,
-                  "wrap": true,
-                  "color": "#666666",
-                  "size": "sm",
-                  "flex": 5
+                  'type': 'text',
+                  'text': message,
+                  'wrap': true,
+                  'color': '#666666',
+                  'size': 'sm',
+                  'flex': 5
                 }
               ]
             }
@@ -373,127 +371,127 @@ function genFlexMessage(title, message, link, linkMsg, img){
         }
       ]
     }
-  }}
+  }};
   if (link && linkMsg){
     flex.contents.footer = {
-      "type": "box",
-      "layout": "vertical",
-      "spacing": "sm",
-      "contents": [
+      'type': 'box',
+      'layout': 'vertical',
+      'spacing': 'sm',
+      'contents': [
         {
-          "type": "button",
-          "style": "link",
-          "height": "sm",
-          "action": {
-            "type": "uri",
-            "label": linkMsg,
-            "uri": link
+          'type': 'button',
+          'style': 'link',
+          'height': 'sm',
+          'action': {
+            'type': 'uri',
+            'label': linkMsg,
+            'uri': link
           }
         }
       ],
       'flex': 0
-    }
+    };
   }
   if (img){
     flex.contents.hero = {
-      "type": "image",
-      "url": img,
-      "size": "full",
-      "aspectRatio": "20:13",
-      "aspectMode": "cover"
-    }
+      'type': 'image',
+      'url': img,
+      'size': 'full',
+      'aspectRatio': '20:13',
+      'aspectMode': 'cover'
+    };
     if (link){
       flex.hero.action = {
-        "type": "uri",
-        "uri": link
-      }
+        'type': 'uri',
+        'uri': link
+      };
     }
   }
   return flex;
 }
-function genFlexExpenseMessage(total, expenses, timestamp){
-  const contents = []
+function genFlexExpenseMessage(total, expenses, timestamp, tag){
+  const contents = [];
   for(let cat in expenses){
     let cost = expenses[cat];
     contents.push(
       {
-        "type": "box",
-        "layout": "horizontal",
-        "contents": [
+        'type': 'box',
+        'layout': 'horizontal',
+        'contents': [
           {
-            "type": "text",
-            "text": cat +  " " + tag,
-            "size": "sm",
-            "color": "#555555",
-            "flex": 0
+            'type': 'text',
+            'text': cat +  ' ' + tag,
+            'size': 'sm',
+            'color': '#555555',
+            'flex': 0
           },
           {
-            "type": "text",
-            "text": "฿" + numberWithCommas(cost) ,
-            "size": "sm",
-            "color": "#111111",
-            "align": "end"
+            'type': 'text',
+            'text': '฿' + numberWithCommas(cost) ,
+            'size': 'sm',
+            'color': '#111111',
+            'align': 'end'
           }
         ]
       },
-    )
+    );
   }
   const flex = {
-    "type": "bubble",
-    "body": {
-      "type": "box",
-      "layout": "vertical",
-      "contents": [
+    'type': 'bubble',
+    'body': {
+      'type': 'box',
+      'layout': 'vertical',
+      'contents': [
         {
-          "type": "text",
-          "text": "Expense",
-          "weight": "bold",
-          "color": "#1DB446",
-          "size": "sm"
+          'type': 'text',
+          'text': 'Expense',
+          'weight': 'bold',
+          'color': '#1DB446',
+          'size': 'sm'
         },
         {
-          "type": "text",
-          "text": total,
-          "weight": "bold",
-          "size": "xxl",
-          "margin": "md"
+          'type': 'text',
+          'text': total,
+          'weight': 'bold',
+          'size': 'xxl',
+          'margin': 'md'
         },
         {
-          "type": "separator",
-          "margin": "xxl"
+          'type': 'separator',
+          'margin': 'xxl'
         },
         {
-          "type": "box",
-          "layout": "vertical",
-          "margin": "xxl",
-          "spacing": "sm",
-          "contents": contents
+          'type': 'box',
+          'layout': 'vertical',
+          'margin': 'xxl',
+          'spacing': 'sm',
+          'contents': contents
         },
         {
-          "type": "separator",
-          "margin": "xxl"
+          'type': 'separator',
+          'margin': 'xxl'
         },
         {
-          "type": "box",
-          "layout": "horizontal",
-          "margin": "md",
-          "contents": [
+          'type': 'box',
+          'layout': 'horizontal',
+          'margin': 'md',
+          'contents': [
             {
-              "type": "text",
-              "text": formatDate(timestamp),
-              "color": "#aaaaaa",
-              "size": "xs",
-              "align": "end"
+              'type': 'text',
+              'text': formatDate(timestamp),
+              'color': '#aaaaaa',
+              'size': 'xs',
+              'align': 'end'
             }
           ]
         }
       ]
     },
-    "styles": {
-      "footer": {
-        "separator": true
+    'styles': {
+      'footer': {
+        'separator': true
       }
     }
-  }
+  };
   return flex;
 }
