@@ -42,6 +42,13 @@ module.exports ={
       return [{type: 'text', text:getCategoriesMessage()}];
     }
     else if (message.toUpperCase() == DEBT_MENU){
+      return [genFlexMessage(
+      'Debt Report', 
+      'Debt', 
+      'https://liff.line.me/1653949405-VNlagD7p', 
+      'LINK', 
+      'https://firebasestorage.googleapis.com/v0/b/fir-1-4004c.appspot.com/o/credit_card_logo.png?alt=media&token=0fe5811c-da59-4089-ac42-7fa011cdb8d2')]
+      /*
       return [{type: 'flex', altText: 'Debt' ,contents: {
         'type': 'bubble',
         'hero': {
@@ -89,7 +96,7 @@ module.exports ={
           ],
           'flex': 0
         }
-      }}];
+      }}];*/
     }
     else if(message.match(REPORT_EXP)){ // input by menu 
       
@@ -131,7 +138,7 @@ module.exports ={
         let ret_str = '';
         let expenses = {};
         let timestamp = getTimeAndExpense(strArr,numberArr,expenses);
-        ret_str = 'Expense : ';
+        ret_str = '';
         let index = 0;
         for(let cat in expenses){
           let cost = expenses[cat];
@@ -139,7 +146,7 @@ module.exports ={
           await fbHelper.addExpense(userId,cat,cost,timestamp + index, tag);
           index++;
         }
-        return [{type: 'text', text:ret_str}];
+        return [genFlexMessage('Expense', ret_str)];
       }
       else{
         return [{type: 'text', text:'No Response from this message'}];
@@ -368,4 +375,80 @@ function formatDate(date) {
   if (day.length < 2) day = '0' + day;
 
   return [year, month, day].join('-');
+}
+function genFlexMessage(title, message, link, linkMsg, img){
+  const flex = {type: 'flex', altText: title ,contents: {
+    type: 'bubble',
+    body: {
+      type: 'box',
+      layout: 'vertical',
+      contents: [
+        {
+          type: 'text',
+          text: title,
+          weight: 'bold',
+          size: 'xl'
+        },
+        {
+          "type": "box",
+          "layout": "vertical",
+          "margin": "lg",
+          "spacing": "sm",
+          "contents": [
+            {
+              "type": "box",
+              "layout": "baseline",
+              "spacing": "sm",
+              "contents": [
+                {
+                  "type": "text",
+                  "text": message,
+                  "wrap": true,
+                  "color": "#666666",
+                  "size": "sm",
+                  "flex": 5
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }}
+  if (link && linkMsg){
+    flex.contents.footer = {
+      "type": "box",
+      "layout": "vertical",
+      "spacing": "sm",
+      "contents": [
+        {
+          "type": "button",
+          "style": "link",
+          "height": "sm",
+          "action": {
+            "type": "uri",
+            "label": linkMsg,
+            "uri": link
+          }
+        }
+      ],
+      'flex': 0
+    }
+  }
+  if (img){
+    flex.hero = {
+      "type": "image",
+      "url": img,
+      "size": "full",
+      "aspectRatio": "20:13",
+      "aspectMode": "cover"
+    }
+    if (link){
+      flex.hero.action = {
+        "type": "uri",
+        "uri": link
+      }
+    }
+  }
+  return flex;
 }
