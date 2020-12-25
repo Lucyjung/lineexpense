@@ -93,15 +93,17 @@ module.exports ={
         let timestamp = getTimeAndExpense(strArr,numberArr,expenses);
         let index = 0;
         let total = 0;
+        let detail = [];
         for(let cat in expenses){
           let cost = expenses[cat];
           //ret_str = ret_str + '\n' + cat + ': ' +  cost;
           total += cost;
+          detail.push({key : cat , value : cost});
           //await fbHelper.addExpense(userId,cat,cost,timestamp + index, tag);
           index++;
         }
         let totalStr = numberWithCommas(total);
-        return [genFlexExpenseMessage('Expense ' + totalStr, totalStr,expenses, timestamp, tag)];
+        return [genFlexExpenseMessage('Expense ' + totalStr, totalStr,detail, timestamp, tag)];
       }
       else{
         return [{type: 'text', text:'No Response from this message'}];
@@ -329,6 +331,8 @@ function dataToFlex(aggregatedData){
   for (let i in aggregatedData.sum){
     if (isRaw){
       header += '\n' + aggregatedData.sum[i].label + ' : ' + numberWithCommas(parseFloat(aggregatedData.sum[i].value)) ;
+    } else{
+      detail.push({key: aggregatedData.sum[i].label, value : parseFloat(aggregatedData.sum[i].value)});
     }
     total += aggregatedData.sum[i].value;
   }
@@ -340,16 +344,13 @@ function dataToFlex(aggregatedData){
       let date = formatDate(aggregatedData.raw[i].timestamp) ;
       if (prev_date != date){
         //msg += '\n- ' + date + ' -';
-        let tmpDate = {};
-        tmpDate[date] = '';
-        detail.push(tmpDate);
+        detail.push({key: date});
         prev_date = date;
       }
-      let tmpDetail = {};
-      tmpDetail[aggregatedData.raw[i].category] = aggregatedData.raw[i].expense; 
+      let tmpDetail = {key : aggregatedData.raw[i].category, value : numberWithCommas(aggregatedData.raw[i].expense) };
 
       if (aggregatedData.raw[i].tag){
-        tmpDetail[aggregatedData.raw[i].category] += ' ' + aggregatedData.raw[i].tag;
+        tmpDetail.value += ' ' + aggregatedData.raw[i].tag;
       }
       detail.push(tmpDetail);
     }
@@ -473,11 +474,11 @@ function genFlexExpenseMessage(title, header, detail, timestamp, tag){
       'align': 'end'
     }
   );
-  for(let key in detail){
-    let cost = detail[key];
+  for(let info of detail){
+    let cost = info.value;
     let tmp = [{
       'type': 'text',
-      'text': key,
+      'text': info.key,
       'size': 'sm',
       'color': '#555555',
       'flex': 0
@@ -485,7 +486,7 @@ function genFlexExpenseMessage(title, header, detail, timestamp, tag){
     if (cost){
       tmp.push({
         'type': 'text',
-        'text': '฿' + numberWithCommas(cost) ,
+        'text': '฿' + cost ,
         'size': 'sm',
         'color': '#111111',
         'align': 'end'
