@@ -436,7 +436,7 @@ function genFlexExpenseMessage(total, expenses, timestamp, tag){
       },
     );
   }
-  const flex = {type: 'flex', altText: title ,contents: {
+  const flex = {type: 'flex', altText: 'Expense' + total ,contents: {
     'type': 'bubble',
     'body': {
       'type': 'box',
