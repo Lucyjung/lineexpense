@@ -13,14 +13,17 @@ const keyToCatTbl = {
   F : 'Food',
   T : 'Traffic',
   C : 'Clothing',
+  CO :'Cosmetic',
   S : 'Social',
   M : 'Medical',
   E : 'Entertainment',
+  EQ : 'Equipment',
   U : 'Utilities',
   TV : 'Travel',
   ED : 'Education',
   MA : 'Maintenance',
   ME : 'Merit',
+  IN: 'Insurance',
   O : 'Other'
   // D : Reserverd for modify date
 };
@@ -48,55 +51,6 @@ module.exports ={
       'https://liff.line.me/1653949405-VNlagD7p', 
       'LINK', 
       'https://firebasestorage.googleapis.com/v0/b/fir-1-4004c.appspot.com/o/credit_card_logo.png?alt=media&token=0fe5811c-da59-4089-ac42-7fa011cdb8d2')]
-      /*
-      return [{type: 'flex', altText: 'Debt' ,contents: {
-        'type': 'bubble',
-        'hero': {
-          'type': 'image',
-          'url': 'https://firebasestorage.googleapis.com/v0/b/fir-1-4004c.appspot.com/o/credit_card_logo.png?alt=media&token=0fe5811c-da59-4089-ac42-7fa011cdb8d2',
-          'size': 'full',
-          'aspectRatio': '20:13',
-          'aspectMode': 'cover',
-          'action': {
-            'type': 'uri',
-            'uri': 'https://liff.line.me/1653949405-VNlagD7p'
-          }
-        },
-        'body': {
-          'type': 'box',
-          'layout': 'vertical',
-          'contents': [
-            {
-              'type': 'text',
-              'text': 'Debt',
-              'weight': 'bold',
-              'size': 'xl'
-            }
-          ]
-        },
-        'footer': {
-          'type': 'box',
-          'layout': 'vertical',
-          'spacing': 'sm',
-          'contents': [
-            {
-              'type': 'button',
-              'style': 'link',
-              'height': 'sm',
-              'action': {
-                'type': 'uri',
-                'label': 'LINK',
-                'uri': 'https://liff.line.me/1653949405-VNlagD7p'
-              }
-            },
-            {
-              'type': 'spacer',
-              'size': 'sm'
-            }
-          ],
-          'flex': 0
-        }
-      }}];*/
     }
     else if(message.match(REPORT_EXP)){ // input by menu 
       
@@ -145,7 +99,7 @@ module.exports ={
           let cost = expenses[cat];
           //ret_str = ret_str + '\n' + cat + ': ' +  cost;
           total += cost
-          await fbHelper.addExpense(userId,cat,cost,timestamp + index, tag);
+          //await fbHelper.addExpense(userId,cat,cost,timestamp + index, tag);
           index++;
         }
         return [genFlexExpenseMessage(numberWithCommas(total),expenses, timestamp)];
@@ -475,7 +429,7 @@ function genFlexExpenseMessage(total, expenses, timestamp){
           },
           {
             "type": "text",
-            "text": "฿" + cost,
+            "text": "฿" + numberWithCommas(cost) ,
             "size": "sm",
             "color": "#111111",
             "align": "end"
