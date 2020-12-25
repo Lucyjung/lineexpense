@@ -329,17 +329,14 @@ function dataToFlex(aggregatedData){
   let isRaw = aggregatedData.raw.length > 0;
   const detail = [];
   for (let i in aggregatedData.sum){
-    if (isRaw){
-      header += '\n' + aggregatedData.sum[i].label + ' : ' + numberWithCommas(parseFloat(aggregatedData.sum[i].value)) ;
-    } else{
-      detail.push({key: aggregatedData.sum[i].label, value : parseFloat(aggregatedData.sum[i].value)});
-    }
+    detail.push({key: aggregatedData.sum[i].label, value : parseFloat(aggregatedData.sum[i].value)});
     total += aggregatedData.sum[i].value;
   }
   let totalStr = numberWithCommas(total);
   title += ' : ' + totalStr;
   if (isRaw){    
     let prev_date = '';
+    detail.push({key: '--- Expense Data ---', value : ''});
     for (let i in aggregatedData.raw){
       let date = formatDate(aggregatedData.raw[i].timestamp) ;
       if (prev_date != date){
