@@ -352,9 +352,10 @@ function dataToFlex(aggregatedData){
       detail.push(tmpDetail);
     }
     
-  } else{
-    header += 'Total : ' + totalStr; 
   }
+
+  header += 'Total : ' + totalStr; 
+  
   let now = new Date();
   return genFlexExpenseMessage(title, header, detail, now.getTime());
 }
