@@ -445,7 +445,7 @@ function genFlexMessage(title, message, link, linkMsg, img){
       'aspectMode': 'cover'
     };
     if (link){
-      flex.hero.action = {
+      flex.contents.hero.action = {
         'type': 'uri',
         'uri': link
       };
