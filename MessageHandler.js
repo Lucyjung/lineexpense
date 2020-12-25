@@ -348,7 +348,7 @@ function dataToFlex(aggregatedData){
       let tmpDetail = {key : aggregatedData.raw[i].category, value : numberWithCommas(aggregatedData.raw[i].expense) };
 
       if (aggregatedData.raw[i].tag){
-        tmpDetail.value = aggregatedData.raw[i].tag + ' ' + tmpDetail.value;
+        tmpDetail.value =  tmpDetail.key + ' (' + aggregatedData.raw[i].tag + ')';
       }
       detail.push(tmpDetail);
     }
