@@ -436,7 +436,7 @@ function genFlexExpenseMessage(total, expenses, timestamp, tag){
       },
     );
   }
-  const flex = {
+  const flex = {type: 'flex', altText: title ,contents: {
     'type': 'bubble',
     'body': {
       'type': 'box',
@@ -492,6 +492,6 @@ function genFlexExpenseMessage(total, expenses, timestamp, tag){
         'separator': true
       }
     }
-  };
+  }};
   return flex;
 }
