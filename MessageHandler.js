@@ -475,26 +475,27 @@ function genFlexExpenseMessage(title, header, detail, timestamp, tag){
   );
   for(let key in detail){
     let cost = detail[key];
+    let tmp = [{
+      'type': 'text',
+      'text': key,
+      'size': 'sm',
+      'color': '#555555',
+      'flex': 0
+    }];
+    if (cost){
+      tmp.push({
+        'type': 'text',
+        'text': '฿' + numberWithCommas(cost) ,
+        'size': 'sm',
+        'color': '#111111',
+        'align': 'end'
+      });
+    }
     contents.push(
       {
         'type': 'box',
         'layout': 'horizontal',
-        'contents': [
-          {
-            'type': 'text',
-            'text': key,
-            'size': 'sm',
-            'color': '#555555',
-            'flex': 0
-          },
-          {
-            'type': 'text',
-            'text': '฿' + numberWithCommas(cost) ,
-            'size': 'sm',
-            'color': '#111111',
-            'align': 'end'
-          }
-        ]
+        'contents': tmp
       },
     );
   }
