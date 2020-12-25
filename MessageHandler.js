@@ -99,7 +99,7 @@ module.exports ={
           //ret_str = ret_str + '\n' + cat + ': ' +  cost;
           total += cost;
           detail.push({key : cat , value : cost});
-          //await fbHelper.addExpense(userId,cat,cost,timestamp + index, tag);
+          await fbHelper.addExpense(userId,cat,cost,timestamp + index, tag);
           index++;
         }
         let totalStr = numberWithCommas(total);
@@ -336,12 +336,12 @@ function dataToFlex(aggregatedData){
   title += ' : ' + totalStr;
   if (isRaw){    
     let prev_date = '';
-    detail.push({key: '--- Expense Data ---', value : ''});
+    detail.push({key: '------------- Expense Data -------------', value : ''});
     for (let i in aggregatedData.raw){
       let date = formatDate(aggregatedData.raw[i].timestamp) ;
       if (prev_date != date){
         //msg += '\n- ' + date + ' -';
-        detail.push({key: date});
+        detail.push({key: '-------------' + date + '-------------'});
         prev_date = date;
       }
       let tmpDetail = {key : aggregatedData.raw[i].category, value : numberWithCommas(aggregatedData.raw[i].expense) };
@@ -355,7 +355,7 @@ function dataToFlex(aggregatedData){
   }
 
   header += 'Total : ' + totalStr; 
-  
+
   let now = new Date();
   return genFlexExpenseMessage(title, header, detail, now.getTime());
 }
