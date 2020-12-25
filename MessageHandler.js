@@ -100,7 +100,8 @@ module.exports ={
           //await fbHelper.addExpense(userId,cat,cost,timestamp + index, tag);
           index++;
         }
-        return [genFlexExpenseMessage(numberWithCommas(total),expenses, timestamp, tag)];
+        let totalStr = numberWithCommas(total);
+        return [genFlexExpenseMessage('Expense ' + totalStr, totalStr,expenses, timestamp, tag)];
       }
       else{
         return [{type: 'text', text:'No Response from this message'}];
@@ -253,11 +254,11 @@ async function getReportData(userId, type, target, isAPICalled){
 async function getReport(userId, type, target){
   
   let aggregatedData = await getReportData(userId, type, target);
-  let report = dataToMsg(aggregatedData);
+  // let report = dataToMsg(aggregatedData);
 
-  let replyMsg = [{type: 'text', text:report}];
+  // let replyMsg = [{type: 'text', text:report}];
 
-  return (replyMsg); 
+  return dataToFlex(aggregatedData); 
 }
 function aggregation(queryData,groupBy, sumBy, isRequireRaw){
   let aggregated = {};
@@ -318,6 +319,46 @@ function dataToMsg(aggregatedData){
     
   }
   return msg;
+}
+function dataToFlex(aggregatedData){
+  let title = 'Summary';
+  let header = '';
+  let total = 0;
+  let isRaw = aggregatedData.raw.length > 0;
+  const detail = [];
+  for (let i in aggregatedData.sum){
+    if (isRaw){
+      header += '\n' + aggregatedData.sum[i].label + ' : ' + numberWithCommas(parseFloat(aggregatedData.sum[i].value)) ;
+    }
+    total += aggregatedData.sum[i].value;
+  }
+  let totalStr = numberWithCommas(total);
+  title += ' : ' + totalStr;
+  if (isRaw){    
+    let prev_date = '';
+    for (let i in aggregatedData.raw){
+      let date = formatDate(aggregatedData.raw[i].timestamp) ;
+      if (prev_date != date){
+        //msg += '\n- ' + date + ' -';
+        let tmpDate = {};
+        tmpDate[date] = '';
+        detail.push(tmpDate);
+        prev_date = date;
+      }
+      let tmpDetail = {};
+      tmpDetail[aggregatedData.raw[i].category] = aggregatedData.raw[i].expense; 
+
+      if (aggregatedData.raw[i].tag){
+        tmpDetail[aggregatedData.raw[i].category] += ' ' + aggregatedData.raw[i].tag;
+      }
+      detail.push(tmpDetail);
+    }
+    
+  } else{
+    header += 'Total : ' + totalStr; 
+  }
+  let now = new Date();
+  return genFlexExpenseMessage(title, header, detail, now.getTime());
 }
 function formatDate(date) {
   var d = new Date(date),
@@ -409,10 +450,31 @@ function genFlexMessage(title, message, link, linkMsg, img){
   }
   return flex;
 }
-function genFlexExpenseMessage(total, expenses, timestamp, tag){
+function genFlexExpenseMessage(title, header, detail, timestamp, tag){
   const contents = [];
-  for(let cat in expenses){
-    let cost = expenses[cat];
+  const footer = [];
+  if (tag){
+    footer.push(
+      {
+        'type': 'text',
+        'text': tag,
+        'color': '#aaaaaa',
+        'size': 'xs',
+        'flex': 0
+      }
+    );
+  }
+  footer.push(
+    {
+      'type': 'text',
+      'text': formatDate(timestamp),
+      'color': '#aaaaaa',
+      'size': 'xs',
+      'align': 'end'
+    }
+  );
+  for(let key in detail){
+    let cost = detail[key];
     contents.push(
       {
         'type': 'box',
@@ -420,7 +482,7 @@ function genFlexExpenseMessage(total, expenses, timestamp, tag){
         'contents': [
           {
             'type': 'text',
-            'text': cat +  ' ' + tag,
+            'text': key,
             'size': 'sm',
             'color': '#555555',
             'flex': 0
@@ -436,7 +498,7 @@ function genFlexExpenseMessage(total, expenses, timestamp, tag){
       },
     );
   }
-  const flex = {type: 'flex', altText: 'Expense' + total ,contents: {
+  const flex = {type: 'flex', altText: title ,contents: {
     'type': 'bubble',
     'body': {
       'type': 'box',
@@ -451,7 +513,7 @@ function genFlexExpenseMessage(total, expenses, timestamp, tag){
         },
         {
           'type': 'text',
-          'text': total,
+          'text': header,
           'weight': 'bold',
           'size': 'xxl',
           'margin': 'md'
@@ -475,15 +537,7 @@ function genFlexExpenseMessage(total, expenses, timestamp, tag){
           'type': 'box',
           'layout': 'horizontal',
           'margin': 'md',
-          'contents': [
-            {
-              'type': 'text',
-              'text': formatDate(timestamp),
-              'color': '#aaaaaa',
-              'size': 'xs',
-              'align': 'end'
-            }
-          ]
+          'contents': footer
         }
       ]
     },
