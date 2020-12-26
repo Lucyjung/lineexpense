@@ -52,6 +52,10 @@ module.exports ={
           }
 
           let start = new Date(d.getFullYear() + '-' + (d.getMonth()+1) + '-' + tmpData.duedate);
+          start.setHours(0);
+          start.setMinutes(0);
+          start.setSeconds(0);
+          start.setUTCMilliseconds(0);
           let end = new Date(start.getTime());
           end.setMonth(end.getMonth() + 1);
 				
