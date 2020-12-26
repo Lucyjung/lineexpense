@@ -60,7 +60,7 @@ module.exports ={
           end.setMonth(end.getMonth() + 1);
 				
           let startTime = start.getTime() ;
-          let endTime = end.getTime()+ (1000*60*60*24);
+          let endTime = end.getTime();
           request.push(fbHelper.getAllDebtExpense(req.params.id, '#' + tmpData.tag,startTime,endTime));
         }
         
