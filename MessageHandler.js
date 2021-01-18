@@ -517,7 +517,7 @@ function genFlexExpenseMessage(title, header, detail, period, tag){
         },
         {
           'type': 'text',
-          'text': header,
+          'text': '฿' + header,
           'weight': 'bold',
           'size': 'xxl',
           'margin': 'md'
