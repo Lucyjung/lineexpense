@@ -213,12 +213,7 @@ async function getReportData(userId, type, target, isAPICalled){
   switch (type){
   
   case REPORT_TYPE_YEARLY:
-    if (oriTarget && oriTarget.length > 4) {
-      let year = parseFloat(oriTarget.substring(0,4));
-      start.setFullYear(year);
-      end.setFullYear(year);
-    }
-    else if (target && target > MIN_YEAR_SUPPORT){
+    if (target && target > MIN_YEAR_SUPPORT){
       start.setFullYear(target);
       end.setFullYear(target);
     }
@@ -228,8 +223,11 @@ async function getReportData(userId, type, target, isAPICalled){
   case REPORT_TYPE_MONTHY:
     if (oriTarget && oriTarget.length > 4) {
       let month = parseFloat(oriTarget.substring(4,6));
-      start.setFullYear(month - 1);
-      end.setFullYear(month - 1);
+      let year = parseFloat(oriTarget.substring(0,4));
+      start.setFullYear(year);
+      end.setFullYear(year);
+      start.setMonth(month - 1);
+      end.setMonth(month - 1);
     }
     else if (target && target > 0 && target < 12){
       start.setMonth(target - 1);
@@ -241,7 +239,14 @@ async function getReportData(userId, type, target, isAPICalled){
     isRequireRaw = false;
   case REPORT_TYPE_DAILY:
     if (type == REPORT_TYPE_DAILY && oriTarget && oriTarget.length > 6){
+      let month = parseFloat(oriTarget.substring(4,6));
+      let year = parseFloat(oriTarget.substring(0,4));
       let date = parseFloat(oriTarget.substring(6,8))
+
+      start.setFullYear(year);
+      end.setFullYear(year);
+      start.setMonth(month - 1);
+      end.setMonth(month - 1);
       start.setDate(date);
       end.setDate(date);
     }
